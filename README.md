@@ -1,4 +1,4 @@
-# `zarinpal-payment`
+# `zarinpal-ts`
 
 A NodeJS package, written in TypeScript, to provide access to Zarinpal's payment gateway.
 
@@ -7,11 +7,11 @@ A NodeJS package, written in TypeScript, to provide access to Zarinpal's payment
 Open a command prompt in the directory where `package.json` resides, and run this:
 
 ```
-npm install zarinpal-payment --save
+npm install zarinpal-ts --save
 ```
 
 This installs the latest version of the package in your project's local node modules.
 
 # Sample codes
 
-Sample usages of the package are located under the [`zarinpal-payment-sample`](https://github.com/babakks/zarinpal-payment-sample) repository.
+Sample usages of the package are located under the [`zarinpal-ts-sample`](https://github.com/babakks/zarinpal-ts-sample) repository.

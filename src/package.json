@@ -1,11 +1,11 @@
 {
-    "name": "zarinpal-payment",
+    "name": "zarinpal-ts",
     "version": "1.0.0",
     "description": "Zarinpal payment package.",
     "main": "./dist/index.js",
     "repository": {
         "type": "github",
-        "url": "https://github.com/babakks/zarinpal-payment"
+        "url": "https://github.com/babakks/zarinpal-ts"
     },
     "author": "",
     "license": "MIT",
