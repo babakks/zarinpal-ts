@@ -4,8 +4,8 @@
     "description": "Zarinpal payment package.",
     "main": "./dist/index.js",
     "repository": {
-        "type": "",
-        "url": ""
+        "type": "github",
+        "url": "https://github.com/babakks/zarinpal-payment/tree/develop"
     },
     "author": "",
     "license": "MIT",
