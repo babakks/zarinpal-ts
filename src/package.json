@@ -5,7 +5,7 @@
     "main": "./dist/index.js",
     "repository": {
         "type": "github",
-        "url": "https://github.com/babakks/zarinpal-payment/tree/develop"
+        "url": "https://github.com/babakks/zarinpal-payment"
     },
     "author": "",
     "license": "MIT",
