@@ -4,7 +4,7 @@
     "description": "Zarinpal payment package.",
     "main": "./dist/index.js",
     "repository": {
-        "type": "github",
+        "type": "git",
         "url": "https://github.com/babakks/zarinpal-ts"
     },
     "author": "babakks",
