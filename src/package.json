@@ -1,14 +1,16 @@
 {
     "name": "zarinpal-ts",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "description": "Zarinpal payment package.",
     "main": "./dist/index.js",
     "repository": {
         "type": "github",
         "url": "https://github.com/babakks/zarinpal-ts"
     },
-    "author": "",
+    "author": "babakks",
+	"keywords": ["zarinpal", "typescript", "javascript", "payment"],
     "license": "MIT",
+	"files": ["src","dist","test","*"],
     "scripts": {
         "copyAssets": "cpx \"src/**/*.{json,pem,htm,html,def}\" \"dist\"",
         "copyAll": "npm run copyAssets",
