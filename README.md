@@ -79,7 +79,7 @@ const registration = await paymentSession.register(
     "http://my.domain.com/payment/callback"
 );
 
-if (registration.isSuccessful()) {
+if (registration.isSuccessful) {
     const gatewayURL = paymentSession.gateway;
 
     /* ...Redirecting to the "gatewayURL"... */
@@ -107,7 +107,7 @@ Here, `request` is assumed to be the original request object of
 ```ts
 const verification = await paymentSession.verify(request);
 
-if (verification.isSuccessful()) {
+if (verification.isSuccessful) {
     const refId = verification.refId;
 
     /* ...Returning "refId" to the user... */
