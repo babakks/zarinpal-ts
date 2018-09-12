@@ -131,7 +131,7 @@ import {
     ZarinpalServiceConfig,
     DefaultHttpServiceInvoker,
     PaymentManager
-} from "zarinpal-payment";
+} from "zarinpal-ts";
 
 const zarinpalConfig = new ZarinpalServiceConfig(
     // Put your MerchantID here:
