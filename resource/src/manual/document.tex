@@ -1,0 +1,45 @@
+\documentclass[12pt,a4paper,oneside,notitlepage]{article} %{report}
+%\documentclass[12pt,a4paper,twoside]{book}
+%\documentclass[11pt,a4paper,oneside]{book}
+%\documentclass[11pt,a4paper,oneside]{}
+\usepackage{mystyle}
+\input{tex/commands}
+
+\hypersetup{
+	bookmarksnumbered, 
+	pdftitle={مستندات کاربری},
+	pdfauthor={بابک خلخالی شاندیز},
+	pdfsubject={مستندات کاربری}}
+ 
+\title{مستندات کاربری ماژول درگاه پرداخت زرین‌پال برای محیط \texttt{Node.js}} 
+
+\date{\today}
+\author{بابک خلخالی شاندیز}
+
+\begin{document}	
+	\maketitle
+	\thispagestyle{empty}
+
+	%\frontmatter	
+	\pagebreak
+	\pagenumbering{alph}
+	\include{tex/foreword}
+			
+	\tableofcontents
+	%\listoffigures
+	%\listoftables
+
+	%\mainmatter
+	\pagebreak
+	\pagenumbering{arabic}
+	\include{tex/section-defs}
+	\include{tex/section1}
+	\include{tex/section2}
+	\include{tex/section3}
+	
+	%\bibliography{tex/ref}
+	%\include{tex/bib}
+	
+	%\backmatter
+	
+\end{document}

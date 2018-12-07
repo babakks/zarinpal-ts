@@ -1,0 +1,74 @@
+\ProvidesPackage{mystyle}
+
+%\usepackage[a4paper,left=42.5mm, right=42.5mm, topt=54.5mm, bottom=53.5mm]{geometry}
+%\usepackage[a4paper,left=42.5mm, right=42.5mm, topt=54.5mm, bottom=53.5mm,textwidth=120mm, textheight=190mm]{geometry}
+\usepackage[a4paper,left=43mm, right=43mm, top=56mm, bottom=55mm]{geometry}
+%\usepackage{showframe}
+
+%\usepackage{fontspec}
+\usepackage{enumerate}
+\usepackage{graphicx}
+%\usepackage{xltxtra}
+\usepackage{amsmath}
+%\usepackage{amsfonts}
+\usepackage{mathtools}
+%\usepackage{siunitx}
+%\sisetup{load-configurations = abbreviations}
+%\usepackage{siunits}
+\usepackage[multiple]{footmisc}
+\usepackage{perpage}
+\usepackage[nottoc]{tocbibind}
+\usepackage{cite}
+%\usepackage{float}
+\usepackage{multirow}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{supertabular}
+\usepackage[table]{xcolor}
+\usepackage{caption}
+%\usepackage{rotating}
+%\usepackage{atbegshi}
+%\usepackage{lscape}
+%\usepackage{pdflscape}
+%\pagestyle{headings}
+\usepackage{twoopt}
+%\usepackage[hidelinks,hyperfootnotes=false]{hyperref} % Option "hyperfootnotes=false" was added for compatibility issue with "footmisc" package.
+\usepackage[hidelinks]{hyperref}
+%\usepackage{titlesec}
+%\usepackage{csvsimple}
+\usepackage{setspace}
+%\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[titles]{tocloft}
+\usepackage{ifthen}
+\usepackage{url}
+
+\usepackage[localise]{xepersian}
+
+\bibliographystyle{unsrt}
+
+\MakePerPage{footnote}
+
+% Removing horizontal dots in table of contents.
+\renewcommand{\cftdot}{}
+
+%\usepackage{tocloft}
+
+% Formatting the lists (tocloft)
+\setlength{\cftfignumwidth}{3em}  % Modify number width in LoF
+\setlength{\cfttabnumwidth}{3em}  % Modify number width in LoT
+
+
+% Range cross reference literals (in Persian).
+\newcommand{\crefrangeconjunction}{--}
+\newcommand{\crefpairconjunction}{ و~}
+%\newcommand{\crefmiddleconjunction}{}
+\newcommand{\creflastconjunction}{ و~}
+
+\settextfont{XB Yas} %\settextfont[Scale=1]{XB Zar}%
+\setlatintextfont{Times New Roman}%{Junicode}
+\setdigitfont{Yas} %\setdigitfont{XB Yas} %\setdigitfont{ParsiDigits}%

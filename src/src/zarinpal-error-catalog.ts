@@ -1,6 +1,5 @@
+import { ZarinpalError } from "./zarinpal-error";
 import { default as config } from "./zarinpal-error-catalog-data";
-
-export type ZarinpalError = { code: number; message: string };
 
 /**
  * Provides an error catalog for Zarinpal payment process.
@@ -19,11 +18,12 @@ export class ZarinpalErrorCatalog {
    * Returns the error associated with given error code.
    *
    * @param {number} code
-   * @returns The error associated with the given code; otherwise, undefined.
+   * @returns {ZarinpalError} The error associated with the given code;
+   *   otherwise, undefined.
    * @memberof ZarinpalErrorCatalog
    */
   get(code: number): ZarinpalError {
-    return this._catalog.find(x => x.code === code);
+    return this._catalog.filter(x => x.code === code)[0];
   }
 
   /**
@@ -33,6 +33,6 @@ export class ZarinpalErrorCatalog {
    * @memberof ZarinpalErrorCatalog
    */
   getSuccessful(): ZarinpalError {
-    return this._catalog.find(x => x.code === 100);
+    return this.get(100);
   }
 }
