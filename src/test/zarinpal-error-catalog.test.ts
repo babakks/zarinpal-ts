@@ -1,19 +1,21 @@
 import { ZarinpalErrorCatalog } from "../src/zarinpal-error-catalog";
 
-import "jest";
+import { expect } from "chai";
 
-describe("ZarinpalErrorCatalog.get()", () => {
-  it("should return the correct entry.", () => {
-    expect(new ZarinpalErrorCatalog().get(-11).code).toBe(-11);
+describe("ZarinpalErrorCatalog", () => {
+  describe("get()", () => {
+    it("should return the correct entry.", () => {
+      expect(new ZarinpalErrorCatalog().get(-11).code).to.equal(-11);
+    });
+
+    it("should return `undefined` if given code was not found.", () => {
+      expect(new ZarinpalErrorCatalog().get(999888)).to.be.undefined;
+    });
   });
 
-  it("should return undefined if given code was not found.", () => {
-    expect(new ZarinpalErrorCatalog().get(999888)).toBeUndefined();
-  });
-});
-
-describe("ZarinpalErrorCatalog.getSuccessful()", () => {
-  it('should return the "successful" entry correctly.', () => {
-    expect(new ZarinpalErrorCatalog().getSuccessful().code).toBe(100);
+  describe("getSuccessful()", () => {
+    it("should return the 'successful' entry correctly.", () => {
+      expect(new ZarinpalErrorCatalog().getSuccessful().code).to.equal(100);
+    });
   });
 });

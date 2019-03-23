@@ -1,207 +1,221 @@
 import { SandboxZarinpalPaymentSession } from "../src/sandbox-zarinpal-payment-session";
 import { HttpServiceInvoker } from "../src/http/http-service-invoker";
 import { ZarinpalServiceConfig } from "../src/zarinpal-service-config";
-import "jest";
 import { PaymentStatus } from "../src/model/payment-status";
 
-describe("SandboxZarinpalPaymentSession.register()", () => {
-  it("should send a POST request to the server.", () => {
-    const setup = createRegistrationSubject();
+import { expect } from "chai";
+import sinon from "sinon";
 
-    setup.subject.register("https://my.domain.com/payment/callback");
+const fakeCallbackUrl = "https://my.domain.com/payment/callback";
 
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.length
-    ).toBeGreaterThan(0);
+// Zarinpal endpoints
+const gatewayUrl = "https://sandbox.zarinpal.com/pg/StartPay/";
+const verificationAPIEndpoint =
+  "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json";
+const verificationExtendedAPIEndpoint =
+  "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerificationWithExtra.json";
+const registrationAPIEndpoint =
+  "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json";
+const registrationExtendedAPIEndpoint =
+  "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequestWithExtra.json";
 
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.some(
-        x =>
-          (x[0].startsWith(
-            "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
-          ) ||
-            x[0].startsWith(
-              "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequestWithExtra.json"
-            )) &&
-          x[1] === "POST"
-      )
-    ).toBeTruthy();
+describe("SandboxZarinpalPaymentSession", () => {
+  describe("register()", () => {
+    it("should send a `POST` request to the server.", () => {
+      const setup = createRegistrationSubject();
+
+      setup.subject.register(fakeCallbackUrl);
+
+      const mockMethod = setup.invoker.invoke as sinon.SinonStub;
+
+      expect(
+        mockMethod.calledOnceWith(
+          sinon.match(
+            value =>
+              typeof value === "string" &&
+              (value.startsWith(registrationAPIEndpoint) ||
+                value.startsWith(registrationExtendedAPIEndpoint))
+          ),
+          sinon.match("POST")
+        )
+      ).to.be.true;
+    });
+
+    it("should return `undefined`, if the payment was already registered.", async () => {
+      const setup = createRegistrationSubject();
+      setup.subject.payment.status = PaymentStatus.Registered;
+
+      const value = await setup.subject.register(fakeCallbackUrl);
+
+      expect(value).to.be.undefined;
+    });
+
+    it("should call the extended API ('~WithExtra'), if any wage calculation function was defined.", () => {
+      const setup = createRegistrationSubject();
+      setup.config.wageCalculator = () => {
+        return { z1: {}, z2: {} };
+      };
+
+      setup.subject.register(fakeCallbackUrl);
+
+      const mockMethod = setup.invoker.invoke as sinon.SinonStub;
+
+      expect(
+        mockMethod.calledOnceWith(
+          sinon.match(
+            value =>
+              typeof value === "string" &&
+              value.startsWith(registrationExtendedAPIEndpoint)
+          )
+        )
+      ).to.be.true;
+    });
+
+    it("should call the extended API ('~WithExtra'), if any custom expiration was defined.", () => {
+      const setup = createRegistrationSubject();
+      setup.config.expireIn = 1000;
+
+      setup.subject.register(fakeCallbackUrl);
+
+      const mockMethod = setup.invoker.invoke as sinon.SinonStub;
+
+      expect(
+        mockMethod.calledOnceWith(
+          sinon.match(
+            value =>
+              typeof value === "string" &&
+              value.startsWith(registrationExtendedAPIEndpoint)
+          )
+        )
+      ).to.be.true;
+    });
   });
 
-  it("should return undefined, if the payment was already registered.", () => {
-    const setup = createRegistrationSubject();
-    setup.subject.payment.status = PaymentStatus.Registered;
+  describe("verify()", () => {
+    it("should send a POST request to the server.", () => {
+      const setup = createVerificationSubject();
 
-    setup.subject
-      .register("https://my.domain.com/payment/callback")
-      .then(value => {
-        expect(value).toBeUndefined();
+      setup.subject.verify(setup.callbackRequest, undefined);
+
+      const mockMethod = setup.invoker.invoke as sinon.SinonStub;
+
+      expect(
+        mockMethod.calledOnceWith(
+          sinon.match(
+            value =>
+              typeof value === "string" &&
+              (value.startsWith(verificationAPIEndpoint) ||
+                value.startsWith(verificationExtendedAPIEndpoint)),
+            "POST"
+          )
+        )
+      ).to.be.true;
+    });
+
+    it("should return `undefined`, if the payment was not registered.", async () => {
+      const setup = createVerificationSubject();
+      setup.subject.payment.status = PaymentStatus.Created;
+
+      const value = await setup.subject.verify(
+        setup.callbackRequest,
+        undefined
+      );
+
+      expect(value).to.be.undefined;
+    });
+
+    it("should call the extended API (~'WithExtra'), if any wage calculation function was defined.", () => {
+      const setup = createVerificationSubject();
+      setup.config.wageCalculator = () => {
+        return { z1: {}, z2: {} };
+      };
+
+      setup.subject.verify(setup.callbackRequest, undefined);
+
+      const mockMethod = setup.invoker.invoke as sinon.SinonStub;
+      expect(
+        mockMethod.calledOnceWith(
+          sinon.match(
+            value =>
+              typeof value === "string" &&
+              value.startsWith(verificationExtendedAPIEndpoint)
+          )
+        )
+      ).to.be.true;
+    });
+
+    it("should call the extended API (~'WithExtra'), if any custom expiration was defined.", () => {
+      const setup = createVerificationSubject();
+      setup.config.expireIn = 1000;
+
+      setup.subject.verify(setup.callbackRequest, undefined);
+
+      const mockMethod = setup.invoker.invoke as sinon.SinonStub;
+      expect(
+        mockMethod.calledOnceWith(
+          sinon.match(
+            value =>
+              typeof value === "string" &&
+              value.startsWith(verificationExtendedAPIEndpoint)
+          )
+        )
+      ).to.be.true;
+    });
+  });
+
+  describe("gateway()", () => {
+    it("should return a URL with correct beginning.", () => {
+      const setup = createRegistrationSubject();
+
+      const value = setup.subject.gateway();
+
+      expect(value.startsWith(gatewayUrl)).to.be.true;
+    });
+  });
+
+  describe("isMine()", () => {
+    it("should identify its callback request.", () => {
+      const setup = createVerificationSubject();
+
+      const result = setup.subject.isMine(setup.callbackRequest, undefined, {
+        Status: "OK",
+        Authority: "00000000000000000000987"
       });
 
-    expect.assertions(1);
-  });
-
-  it("should call extended API, if any wage calculation function was defined.", () => {
-    const setup = createRegistrationSubject();
-    setup.config.wageCalculator = () => {
-      return { z1: {}, z2: {} };
-    };
-
-    setup.subject.register("https://my.domain.com/payment/callback");
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.length
-    ).toBeGreaterThan(0);
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.some(x =>
-        (x[0] as string).startsWith(
-          "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequestWithExtra.json"
-        )
-      )
-    ).toBeTruthy();
-  });
-
-  it("should call extended API, if any custom expiration was defined.", () => {
-    const setup = createRegistrationSubject();
-    setup.config.expireIn = 1000;
-
-    setup.subject.register("https://my.domain.com/payment/callback");
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.length
-    ).toBeGreaterThan(0);
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.some(x =>
-        x[0].startsWith(
-          "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequestWithExtra.json"
-        )
-      )
-    ).toBeTruthy();
-  });
-});
-
-describe("SandboxZarinpalPaymentSession.verify()", () => {
-  it("should send a POST request to the server.", () => {
-    const setup = createVerificationSubject();
-    setup.subject.verify(setup.callbackRequest, undefined);
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.length
-    ).toBeGreaterThan(0);
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.some(
-        x =>
-          (x[0].startsWith(
-            "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
-          ) ||
-            x[0].startsWith(
-              "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerificationWithExtra.json"
-            )) &&
-          x[1] === "POST"
-      )
-    ).toBeTruthy();
-  });
-
-  it("should return undefined, if the payment was not registered.", () => {
-    const setup = createVerificationSubject();
-    setup.subject.payment.status = PaymentStatus.Created;
-
-    setup.subject.verify(setup.callbackRequest, undefined).then(value => {
-      expect(value).toBeUndefined();
+      expect(result).to.be.true;
     });
 
-    expect.assertions(1);
-  });
+    it("should not false identify another payment's callback request.", () => {
+      const setup = createVerificationSubject();
 
-  it("should call extended API, if any wage calculation function was defined.", () => {
-    const setup = createVerificationSubject();
-    setup.config.wageCalculator = () => {
-      return { z1: {}, z2: {} };
-    };
+      setup.callbackRequest.url = (setup.callbackRequest.url as string).replace(
+        setup.subject.authority,
+        "00000000000000000000111"
+      );
 
-    setup.subject.verify(setup.callbackRequest, undefined);
+      const result = setup.subject.isMine(setup.callbackRequest, undefined, {
+        Status: "OK",
+        Authority: "00000000000000000000111"
+      });
 
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.length
-    ).toBeGreaterThan(0);
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.some(x =>
-        x[0].startsWith(
-          "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerificationWithExtra.json"
-        )
-      )
-    ).toBeTruthy();
-  });
-
-  it("should call extended API, if any custom expiration was defined.", () => {
-    const setup = createVerificationSubject();
-    setup.config.expireIn = 1000;
-
-    setup.subject.verify(setup.callbackRequest, undefined);
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.length
-    ).toBeGreaterThan(0);
-
-    expect(
-      (setup.invoker.invoke as jest.Mock).mock.calls.some(x =>
-        x[0].startsWith(
-          "https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerificationWithExtra.json"
-        )
-      )
-    ).toBeTruthy();
-  });
-});
-
-describe("SandboxZarinpalPaymentSession.gateway()", () => {
-  it("should return a URL with correct beginning.", () => {
-    const setup = createRegistrationSubject();
-
-    const gateway = setup.subject.gateway();
-    expect(
-      gateway.startsWith("https://sandbox.zarinpal.com/pg/StartPay/")
-    ).toBeTruthy();
-  });
-});
-
-describe("SandboxZarinpalPaymentSession.isMine()", () => {
-  it("should identify its callback request.", () => {
-    const setup = createVerificationSubject();
-
-    const result = setup.subject.isMine(setup.callbackRequest, undefined, {
-      Status: "OK",
-      Authority: "00000000000000000000987"
+      expect(result).to.be.false;
     });
-
-    expect(result).toBeTruthy();
-  });
-
-  it("should not false identify another payment's callback request.", () => {
-    const setup = createVerificationSubject();
-
-    (setup.callbackRequest.url as string).replace(
-      setup.subject.authority,
-      "00000000000000000000111"
-    );
-
-    const result = setup.subject.isMine(setup.callbackRequest, undefined, {
-      Status: "OK",
-      Authority: "00000000000000000000111"
-    });
-
-    expect(result).toBeFalsy();
   });
 });
+
+class Setup {
+  constructor(
+    public config: ZarinpalServiceConfig,
+    public subject: SandboxZarinpalPaymentSession,
+    public invoker: HttpServiceInvoker,
+    public callbackRequest: any
+  ) {}
+}
 
 function createVerificationSubject(): Setup {
   const result = createRegistrationSubject();
   result.callbackRequest = {
-    url:
-      "https://my.domain.com/callback?Status=OK&Authority=00000000000000000000987"
+    url: `${fakeCallbackUrl}?Status=OK&Authority=00000000000000000000987`
   };
 
   result.subject.payment.status = PaymentStatus.Registered;
@@ -211,41 +225,25 @@ function createVerificationSubject(): Setup {
 }
 
 function createRegistrationSubject(): Setup {
-  const MockInvoker = jest.fn<HttpServiceInvoker>(() => {
-    return {
-      invoke: jest.fn().mockReturnValue(
-        Promise.resolve({
-          Status: "100",
-          Authority: "00000000000000000000987",
-          RefID: "999999999999"
-        })
-      )
-    };
-  });
-
-  const mockInvoker = new MockInvoker();
   const config = new ZarinpalServiceConfig(
     "00000000-0000-0000-0000-000000000000",
     undefined,
     undefined
   );
 
-  const subject = new SandboxZarinpalPaymentSession(config, mockInvoker);
+  const fakeInvoker: HttpServiceInvoker = {
+    invoke: sinon.stub().returns(
+      Promise.resolve({
+        Status: "100",
+        Authority: "00000000000000000000987",
+        RefID: "999999999999"
+      })
+    )
+  };
+
+  const subject = new SandboxZarinpalPaymentSession(config, fakeInvoker);
   subject.payment.amount = 1000;
   subject.payment.description = "Test payment";
 
-  const result = new Setup();
-  result.config = config;
-  result.subject = subject;
-  result.invoker = mockInvoker;
-  result.callbackRequest = {};
-
-  return result;
-}
-
-class Setup {
-  config: ZarinpalServiceConfig;
-  subject: SandboxZarinpalPaymentSession;
-  invoker: HttpServiceInvoker;
-  callbackRequest: any;
+  return new Setup(config, subject, fakeInvoker, {});
 }

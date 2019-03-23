@@ -4,7 +4,6 @@ import { IncomingMessage } from "http";
 import { PaymentOperationResult } from "./model/payment-operation-result";
 import { ZarinpalServiceConfig } from "./zarinpal-service-config";
 import { HttpServiceInvoker } from "./http/http-service-invoker";
-import { HttpReader } from "./http/http-reader";
 import { ZarinpalOriginalRegistrationResult } from "./zarinpal-original-registration-result";
 import { ZarinpalErrorCatalog } from "./zarinpal-error-catalog";
 import { ZarinpalOriginalVerificationResult } from "./zarinpal-original-verification-result";
@@ -12,7 +11,6 @@ import { PaymentStatus } from "./model/payment-status";
 
 import * as querystring from "querystring";
 import * as url from "url";
-import { OperationalError } from "bluebird";
 
 /**
  * Implements Zarinpal payment session.

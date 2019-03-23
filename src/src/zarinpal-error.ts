@@ -3,8 +3,9 @@
  *
  * @export
  * @class ZarinpalError
+ * @extends {Error}
  */
-export class ZarinpalError {
+export class ZarinpalError extends Error {
   /**
    * Creates an instance of ZarinpalError.
    *
@@ -12,5 +13,7 @@ export class ZarinpalError {
    * @param {string} message Error message.
    * @memberof ZarinpalError
    */
-  constructor(public code: number, public message: string) {}
+  constructor(public code: number, public message: string) {
+    super(message);
+  }
 }

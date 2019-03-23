@@ -1,5 +1,3 @@
-import { IncomingMessage } from "http";
-
 /**
  * Defines an interface for HTTP/HTTPS service invokers.
  *

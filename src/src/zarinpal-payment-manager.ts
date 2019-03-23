@@ -6,7 +6,6 @@ import { IncomingMessage } from "http";
 import { parse as parseQueryString } from "querystring";
 import { parse as parseURL } from "url";
 import { ZarinpalPaymentSessionFactory } from "./zarinpal-payment-session-factory";
-import { HttpReader } from "./http/http-reader";
 
 /**
  * Implements Zarinpal payment service manager.

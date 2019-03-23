@@ -13,7 +13,7 @@ export class ZarinpalServiceConfig {
    * @param {string} merchantId Merchant ID of the gateway owner.
    * @param {ZarinpalWageCalculator} [wageCalculator] Wage calculator function,
    *    if any.
-   * @param {number} [expireIn] Gateway expiration duration to overrride the
+   * @param {number} [expireIn] Gateway expiration duration to override the
    *    default value.
    * @memberof ZarinpalServiceConfig
    */

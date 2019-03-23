@@ -7,7 +7,7 @@ A NodeJS package, written in TypeScript, to provide access to Zarinpal's payment
 Open a command prompt in the directory where `package.json` resides, and run this:
 
 ```
-npm install zarinpal-ts --save
+npm install zarinpal-ts
 ```
 
 This installs the latest version of the package in your project's local node modules.
