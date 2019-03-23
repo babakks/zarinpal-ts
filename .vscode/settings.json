@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
     "zarinpal"
-  ]
+  ],
+  "commentAnchors.workspace.excludeFiles": "**/{src/node_modules,src/.git,src/.idea,src/target,src/out,src/build,src/vendor}/**/*"
 }
