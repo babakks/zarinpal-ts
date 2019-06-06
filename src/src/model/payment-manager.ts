@@ -19,11 +19,11 @@ export interface PaymentManager {
   /**
    * Returns the payment session associated with given HTTP request.
    *
-   * @param {IncomingMessage} request Incoming request message.
+   * @param {IncomingMessage} callbackRequest Payment callback request message.
    * @param {*} [requestData] Request data.
    * @returns {PaymentSession} The associated payment session; otherwise,
-   *    undefined.
+   *    `undefined`.
    * @memberof PaymentManager
    */
-  get(request: IncomingMessage, requestData?: any): PaymentSession;
+  get(callbackRequest: IncomingMessage, requestData?: any): PaymentSession;
 }
