@@ -2,21 +2,21 @@
 
 A NodeJS package, written in TypeScript, to provide access to Zarinpal's payment gateway.
 
-# Installing
+## Installation
 
 Open a command prompt in the directory where `package.json` resides, and run this:
 
-```
+```sh
 npm install zarinpal-ts --save
 ```
 
 This installs the latest version of the package in your project's local node modules.
 
-# Sample codes
+## Sample codes
 
 Sample usages of the package are located under the [`zarinpal-ts-sample`](https://github.com/babakks/zarinpal-ts-sample) repository.
 
-# Design
+## Design
 
 The package is a set of loosely-coupled components that enable developers to
 replace their own implementations, if they ever had to. More than that, the
@@ -28,9 +28,9 @@ of the application's composition root will do the job.
 
 The design is based on these abstract entities:
 
--   `PaymentManager`
--   `PaymentSession`
--   `Payment`
+- `PaymentManager`
+- `PaymentSession`
+- `Payment`
 
 The `PaymentManager` is the outmost interface that provides the clients (here,
 the developers that use the package) with appropriate `PaymentSession` objects
@@ -121,7 +121,7 @@ if (verification.isSuccessful) {
 ## Composition
 
 At startup, application should compose payment module from components. For
-example, for a sandboxed payment module:
+example, for a sandbox-ed payment module:
 
 ```ts
 import {
@@ -140,7 +140,7 @@ const zarinpalConfig = new ZarinpalServiceConfig(
 const invoker = new DefaultHttpServiceInvoker();
 
 /**
- * The line below initializes a sandboxed payment gateway. To use the actual
+ * The line below initializes a sandbox-ed payment gateway. To use the actual
  * gateway replace "SandboxZarinpalPaymentSessionFactory" with
  * "DefaultZarinpalPaymentSessionFactory".
  */
