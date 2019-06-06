@@ -55,68 +55,64 @@ services other than the Zarinpal's.
 1. To start a payment process, first off, you need to create a new payment session
    by calling `PaymentManager`'s `create` method:
 
-```ts
-const paymentManager = this.sessionContext("paymentManager");
-const paymentSession = paymentManager.create();
-```
+   ```ts
+   const paymentManager = this.sessionContext("paymentManager");
+   const paymentSession = paymentManager.create();
+   ```
 
-Note that, `PaymentManager` has to be a singleton. So, here,
-`this.sessionContext()` is assumed to return from the user session data on the
-application server.
+   Note that, `PaymentManager` has to be a singleton. So, here,
+   `this.sessionContext()` is assumed to return from the user session data on the
+   application server.
 
 2. Setting up payment information:
 
-```ts
-paymentSession.payment.amount = 1000; // (In Rials.)
-paymentSession.payment.description = "Showcase payment.";
-paymentSession.payment.email = "me@someserver.com";
-```
+   ```ts
+   paymentSession.payment.amount = 1000; // (In Rials.)
+   paymentSession.payment.description = "Showcase payment.";
+   paymentSession.payment.email = "me@someserver.com";
+   ```
 
 3. Registering on the payment server:
 
-```ts
-const registration = await paymentSession.register(
-    "http://my.domain.com/payment/callback"
-);
+   ```ts
+   const registration = await paymentSession.register(
+       "http://my.domain.com/payment/callback"
+   );
 
-if (registration.isSuccessful) {
-    const gatewayURL = paymentSession.gateway;
-
-    /* ...Redirecting to the "gatewayURL"... */
-} else {
-    const message = registration.message;
-
-    /* ...Returning "message" to the user... */
-}
-```
+   if (registration.isSuccessful) {
+       const gatewayURL = paymentSession.gateway;
+       /* ...Redirecting to the "gatewayURL"... */
+   } else {
+       const message = registration.message;
+       /* ...Returning "message" to the user... */
+   }
+   ```
 
 4. After the user has done/abort the payment, the payment server redirects to
    the given callback URL at which payment verification should take place. Before proceeding to verification, it's necessary to recover the corresponding
    `PaymentSession`:
 
-```ts
-const paymentManager = this.sessionContext("paymentManager");
-const paymentSession = paymentManager.get(request);
-```
+   ```ts
+   const paymentManager = this.sessionContext("paymentManager");
+   const paymentSession = paymentManager.get(request);
+   ```
 
-Here, `request` is assumed to be the original request object of
-`IncomingMessage` type.
+   Here, `request` is assumed to be the original request object of
+   `IncomingMessage` type.
 
 5. Verifying the payment:
 
-```ts
-const verification = await paymentSession.verify(request);
+   ```ts
+   const verification = await paymentSession.verify(request);
 
-if (verification.isSuccessful) {
-    const refId = verification.refId;
-
-    /* ...Returning "refId" to the user... */
-} else {
-    const message = verification.message;
-
-    /* ...Returning "message" to the user... */
-}
-```
+   if (verification.isSuccessful) {
+       const refId = verification.refId;
+       /* ...Returning `refId` to the user... */
+   } else {
+       const message = verification.message;
+       /* ...Returning `message` to the user... */
+   }
+   ```
 
 ## Composition
 
@@ -134,15 +130,15 @@ import {
 } from "zarinpal-ts";
 
 const zarinpalConfig = new ZarinpalServiceConfig(
-    // Put your MerchantID here:
+    // Put your `MerchantID` here:
     "00000000-0000-0000-0000-000000000000"
 );
 const invoker = new DefaultHttpServiceInvoker();
 
 /**
  * The line below initializes a sandbox-ed payment gateway. To use the actual
- * gateway replace "SandboxZarinpalPaymentSessionFactory" with
- * "DefaultZarinpalPaymentSessionFactory".
+ * gateway replace `SandboxZarinpalPaymentSessionFactory` with
+ * `DefaultZarinpalPaymentSessionFactory`.
  */
 const sessionFactory = new SandboxZarinpalPaymentSessionFactory(
     zarinpalConfig,
