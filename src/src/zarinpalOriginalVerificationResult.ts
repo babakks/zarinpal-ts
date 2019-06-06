@@ -7,6 +7,13 @@
  * @class ZarinpalOriginalVerificationResult
  */
 export class ZarinpalOriginalVerificationResult {
+  /**
+   * Creates an instance of `ZarinpalOriginalVerificationResult`.
+   * 
+   * @param {number} status
+   * @param {string} refId
+   * @memberof ZarinpalOriginalVerificationResult
+   */
   constructor(public status: number, public refId: string) {}
 
   static from(data: any): ZarinpalOriginalVerificationResult {

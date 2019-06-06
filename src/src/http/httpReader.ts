@@ -8,7 +8,7 @@ import { IncomingMessage } from "http";
  */
 export class HttpReader {
   /**
-   * Creates an instance of HttpReader.
+   * Creates an instance of `HttpReader`.
    *
    * @param {IncomingMessage} _dataContainer Request/response object to read its
    *    content.

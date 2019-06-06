@@ -27,7 +27,7 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
   protected _errors: ZarinpalErrorCatalog;
 
   /**
-   * Creates an instance of ZarinpalPaymentSession.
+   * Creates an instance of `ZarinpalPaymentSession`.
    *
    * @param {ZarinpalServiceConfig} _config Zarinpal payment service
    *    configuration.

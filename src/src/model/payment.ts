@@ -56,7 +56,7 @@ export class Payment {
   name: string;
 
   /**
-   * Creates an instance of Payment.
+   * Creates an instance of `Payment`.
    *
    * @memberof Payment
    */
@@ -64,7 +64,13 @@ export class Payment {
     this.init();
   }
 
-  private init(): any {
+  /**
+   * Initializes properties with default values.
+   *
+   * @private
+   * @memberof Payment
+   */
+  private init(): void {
     this.status = PaymentStatus.Created;
     this.description = "";
     this.amount = 0;

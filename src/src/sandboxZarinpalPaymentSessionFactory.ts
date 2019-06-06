@@ -15,7 +15,7 @@ import { SandboxZarinpalPaymentSession } from "./sandboxZarinpalPaymentSession";
 export class SandboxZarinpalPaymentSessionFactory
   implements ZarinpalPaymentSessionFactory {
   /**
-   * Creates an instance of SandboxZarinpalPaymentSessionFactory.
+   * Creates an instance of `SandboxZarinpalPaymentSessionFactory`.
    *
    * @param {ZarinpalServiceConfig} _config Zarinpal sandbox payment service
    *    configurations.

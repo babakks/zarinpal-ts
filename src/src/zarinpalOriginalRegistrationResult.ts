@@ -7,6 +7,13 @@
  * @class ZarinpalOriginalRegistrationResult
  */
 export class ZarinpalOriginalRegistrationResult {
+  /**
+   * Creates an instance of `ZarinpalOriginalRegistrationResult`.
+   *
+   * @param {number} status
+   * @param {string} authority
+   * @memberof ZarinpalOriginalRegistrationResult
+   */
   constructor(public status: number, public authority: string) {}
 
   static from(data: any): ZarinpalOriginalRegistrationResult {

@@ -8,7 +8,7 @@ import { ZarinpalWageCalculator } from "./zarinpalWageCalculator";
  */
 export class ZarinpalServiceConfig {
   /**
-   * Creates an instance of ZarinpalServiceConfig.
+   * Creates an instance of `ZarinpalServiceConfig`.
    *
    * @param {string} merchantId Merchant ID of the gateway owner.
    * @param {ZarinpalWageCalculator} [wageCalculator] Wage calculator function,

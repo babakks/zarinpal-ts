@@ -10,6 +10,11 @@ import { default as config } from "./zarinpalErrorCatalogData";
 export class ZarinpalErrorCatalog {
   private _catalog: ZarinpalError[];
 
+  /**
+   * Creates an instance of `ZarinpalErrorCatalog`.
+   *
+   * @memberof ZarinpalErrorCatalog
+   */
   constructor() {
     this._catalog = config.errors;
   }

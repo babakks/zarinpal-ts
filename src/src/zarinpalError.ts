@@ -7,7 +7,7 @@
  */
 export class ZarinpalError extends Error {
   /**
-   * Creates an instance of ZarinpalError.
+   * Creates an instance of `ZarinpalError`.
    *
    * @param {number} code Error code (as defined in Zarinpal's docs.)
    * @param {string} message Error message.

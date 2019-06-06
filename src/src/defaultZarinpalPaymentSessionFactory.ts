@@ -14,7 +14,7 @@ import { HttpServiceInvoker } from "./http/httpServiceInvoker";
 export class DefaultZarinpalPaymentSessionFactory
   implements ZarinpalPaymentSessionFactory {
   /**
-   * Creates an instance of DefaultZarinpalPaymentSessionFactory.
+   * Creates an instance of `DefaultZarinpalPaymentSessionFactory`.
    *
    * @param {ZarinpalServiceConfig} _config Zarinpal payment service
    *    configurations.
