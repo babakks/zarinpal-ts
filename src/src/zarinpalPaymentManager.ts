@@ -1,4 +1,4 @@
-import { PaymentManager } from "./model/PaymentManager";
+import { PaymentManager } from "./model/paymentManager";
 import { PaymentSession } from "./model/paymentSession";
 import { ZarinpalPaymentSession } from "./zarinpalPaymentSession";
 
