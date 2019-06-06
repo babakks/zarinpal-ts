@@ -81,7 +81,7 @@ services other than the Zarinpal's.
 
    if (registration.isSuccessful) {
        const gatewayURL = paymentSession.gateway;
-       /* ...Redirecting to the `gatewayURL`... */
+       /* ...Redirecting to `gatewayURL`... */
    } else {
        const message = registration.message;
        /* ...Returning `message` to the user... */
