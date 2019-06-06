@@ -14,8 +14,8 @@ export class PaymentOperationResult {
    * @memberof PaymentOperationResult
    */
   constructor(
-    public isSuccessful: boolean = true,
-    public code: string = "",
-    public message: string = ""
+    public readonly isSuccessful: boolean = true,
+    public readonly code: string = "",
+    public readonly message: string = ""
   ) {}
 }

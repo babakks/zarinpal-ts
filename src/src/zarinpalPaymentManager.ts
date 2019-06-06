@@ -19,7 +19,7 @@ export class ZarinpalPaymentManager implements PaymentManager {
 
   /**
    * Creates an instance of `ZarinpalPaymentManager`.
-   *    
+   *
    * @param {ZarinpalPaymentSessionFactory} factory A `ZarinpalPaymentSession`
    *   factory.
    * @memberof ZarinpalPaymentManager

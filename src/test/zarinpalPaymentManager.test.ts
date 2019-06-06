@@ -5,6 +5,7 @@ import { expect } from "chai";
 import sinon from "sinon";
 
 import { createRegistrationSubject } from "./defaultZarinpalPaymentSession.test";
+import "mocha";
 
 describe("ZarinpalPaymentManager", () => {
   describe("create()", () => {

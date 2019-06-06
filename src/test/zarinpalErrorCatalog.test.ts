@@ -1,6 +1,7 @@
 import { ZarinpalErrorCatalog } from "../src/zarinpalErrorCatalog";
 
 import { expect } from "chai";
+import "mocha";
 
 describe("ZarinpalErrorCatalog", () => {
   describe("get()", () => {

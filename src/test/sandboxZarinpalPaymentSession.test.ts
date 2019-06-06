@@ -5,6 +5,7 @@ import { PaymentStatus } from "../src/model/paymentStatus";
 
 import { expect } from "chai";
 import sinon from "sinon";
+import "mocha";
 
 const fakeCallbackUrl = "https://my.domain.com/payment/callback";
 
