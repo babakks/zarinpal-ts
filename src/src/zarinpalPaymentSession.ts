@@ -1,13 +1,13 @@
-import { PaymentSession } from "./model/payment-session";
+import { PaymentSession } from "./model/paymentSession";
 import { Payment } from "./model/payment";
 import { IncomingMessage } from "http";
-import { PaymentOperationResult } from "./model/payment-operation-result";
-import { ZarinpalServiceConfig } from "./zarinpal-service-config";
-import { HttpServiceInvoker } from "./http/http-service-invoker";
-import { ZarinpalOriginalRegistrationResult } from "./zarinpal-original-registration-result";
-import { ZarinpalErrorCatalog } from "./zarinpal-error-catalog";
-import { ZarinpalOriginalVerificationResult } from "./zarinpal-original-verification-result";
-import { PaymentStatus } from "./model/payment-status";
+import { PaymentOperationResult } from "./model/paymentOperationResult";
+import { ZarinpalServiceConfig } from "./zarinpalServiceConfig";
+import { HttpServiceInvoker } from "./http/httpServiceInvoker";
+import { ZarinpalOriginalRegistrationResult } from "./zarinpalOriginalRegistrationResult";
+import { ZarinpalErrorCatalog } from "./zarinpalErrorCatalog";
+import { ZarinpalOriginalVerificationResult } from "./zarinpalOriginalVerificationResult";
+import { PaymentStatus } from "./model/paymentStatus";
 
 import * as querystring from "querystring";
 import * as url from "url";

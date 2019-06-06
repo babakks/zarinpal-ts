@@ -1,4 +1,4 @@
-import { PaymentStatus } from "./payment-status";
+import { PaymentStatus } from "./paymentStatus";
 
 /**
  * Encapsulates payment information.

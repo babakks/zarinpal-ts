@@ -1,10 +1,10 @@
-import { ZarinpalPaymentManager } from "../src/zarinpal-payment-manager";
-import { ZarinpalPaymentSessionFactory } from "../src/zarinpal-payment-session-factory";
+import { ZarinpalPaymentManager } from "../src/zarinpalPaymentManager";
+import { ZarinpalPaymentSessionFactory } from "../src/zarinpalPaymentSessionFactory";
 
 import { expect } from "chai";
 import sinon from "sinon";
 
-import { createRegistrationSubject } from "./default-zarinpal-payment-session.test";
+import { createRegistrationSubject } from "./defaultZarinpalPaymentSession.test";
 
 describe("ZarinpalPaymentManager", () => {
   describe("create()", () => {

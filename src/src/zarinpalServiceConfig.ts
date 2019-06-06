@@ -1,4 +1,4 @@
-import { ZarinpalWageCalculator } from "./zarinpal-wage-calculator";
+import { ZarinpalWageCalculator } from "./zarinpalWageCalculator";
 
 /**
  * Holds the Zarinpal payment service configurations.

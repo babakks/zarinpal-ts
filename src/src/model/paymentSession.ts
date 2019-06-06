@@ -1,4 +1,4 @@
-import { PaymentOperationResult } from "./payment-operation-result";
+import { PaymentOperationResult } from "./paymentOperationResult";
 import { Payment } from "./payment";
 import { IncomingMessage } from "http";
 

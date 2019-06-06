@@ -1,4 +1,4 @@
-import { ZarinpalPaymentSession } from "./zarinpal-payment-session";
+import { ZarinpalPaymentSession } from "./zarinpalPaymentSession";
 
 /**
  * Defines an interface for Zarinpal payment session factories.

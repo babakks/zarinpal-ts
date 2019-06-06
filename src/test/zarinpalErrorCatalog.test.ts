@@ -1,4 +1,4 @@
-import { ZarinpalErrorCatalog } from "../src/zarinpal-error-catalog";
+import { ZarinpalErrorCatalog } from "../src/zarinpalErrorCatalog";
 
 import { expect } from "chai";
 

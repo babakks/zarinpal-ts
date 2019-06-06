@@ -1,8 +1,8 @@
-import { ZarinpalPaymentSessionFactory } from "./zarinpal-payment-session-factory";
-import { ZarinpalServiceConfig } from "./zarinpal-service-config";
-import { ZarinpalPaymentSession } from "./zarinpal-payment-session";
-import { HttpServiceInvoker } from "./http/http-service-invoker";
-import { SandboxZarinpalPaymentSession } from "./sandbox-zarinpal-payment-session";
+import { ZarinpalPaymentSessionFactory } from "./zarinpalPaymentSessionFactory";
+import { ZarinpalServiceConfig } from "./zarinpalServiceConfig";
+import { ZarinpalPaymentSession } from "./zarinpalPaymentSession";
+import { HttpServiceInvoker } from "./http/httpServiceInvoker";
+import { SandboxZarinpalPaymentSession } from "./sandboxZarinpalPaymentSession";
 
 /**
  * Implements the Zarinpal sandbox payment session factory, which is meant to be

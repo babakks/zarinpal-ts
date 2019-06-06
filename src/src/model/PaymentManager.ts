@@ -1,4 +1,4 @@
-import { PaymentSession } from "./payment-session";
+import { PaymentSession } from "./paymentSession";
 import { IncomingMessage } from "http";
 
 /**
@@ -17,7 +17,7 @@ export interface PaymentManager {
   create(): PaymentSession;
 
   /**
-   * Returns the payment session associated with given HTTP request.
+   * Returns the payment session associated with given callback HTTP request.
    *
    * @param {IncomingMessage} callbackRequest Payment callback request message.
    * @param {*} [requestData] Request data.

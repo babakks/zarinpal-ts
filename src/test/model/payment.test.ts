@@ -1,5 +1,5 @@
 import { Payment } from "../../src/model/payment";
-import { PaymentStatus } from "../../src/model/payment-status";
+import { PaymentStatus } from "../../src/model/paymentStatus";
 
 import { expect } from "chai";
 

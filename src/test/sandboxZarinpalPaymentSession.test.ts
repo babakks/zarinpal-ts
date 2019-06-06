@@ -1,7 +1,7 @@
-import { SandboxZarinpalPaymentSession } from "../src/sandbox-zarinpal-payment-session";
-import { HttpServiceInvoker } from "../src/http/http-service-invoker";
-import { ZarinpalServiceConfig } from "../src/zarinpal-service-config";
-import { PaymentStatus } from "../src/model/payment-status";
+import { SandboxZarinpalPaymentSession } from "../src/sandboxZarinpalPaymentSession";
+import { HttpServiceInvoker } from "../src/http/httpServiceInvoker";
+import { ZarinpalServiceConfig } from "../src/zarinpalServiceConfig";
+import { PaymentStatus } from "../src/model/paymentStatus";
 
 import { expect } from "chai";
 import sinon from "sinon";

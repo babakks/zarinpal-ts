@@ -1,6 +1,6 @@
-import { ZarinpalPaymentSession } from "./zarinpal-payment-session";
-import { ZarinpalServiceConfig } from "./zarinpal-service-config";
-import { HttpServiceInvoker } from "./http/http-service-invoker";
+import { ZarinpalPaymentSession } from "./zarinpalPaymentSession";
+import { ZarinpalServiceConfig } from "./zarinpalServiceConfig";
+import { HttpServiceInvoker } from "./http/httpServiceInvoker";
 
 /**
  * Implements the default Zarinpal payment session.

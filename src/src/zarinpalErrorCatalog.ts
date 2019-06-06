@@ -1,5 +1,5 @@
-import { ZarinpalError } from "./zarinpal-error";
-import { default as config } from "./zarinpal-error-catalog-data";
+import { ZarinpalError } from "./zarinpalError";
+import { default as config } from "./zarinpalErrorCatalogData";
 
 /**
  * Provides an error catalog for Zarinpal payment process.

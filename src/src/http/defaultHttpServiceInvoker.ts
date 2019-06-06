@@ -1,9 +1,9 @@
-import { HttpServiceInvoker } from "./http-service-invoker";
+import { HttpServiceInvoker } from "./httpServiceInvoker";
 import { ClientRequest } from "http";
 import * as https from "https";
 import * as qs from "querystring";
 import { parse as parseURL } from "url";
-import { HttpReader } from "./http-reader";
+import { HttpReader } from "./httpReader";
 
 /**
  * Provides a default HTTP service invoker implementation.

@@ -1,4 +1,4 @@
-import { ZarinpalError } from "./zarinpal-error";
+import { ZarinpalError } from "./zarinpalError";
 
 export default {
   errors: [
