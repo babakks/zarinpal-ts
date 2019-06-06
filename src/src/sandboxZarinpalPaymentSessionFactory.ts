@@ -17,23 +17,26 @@ export class SandboxZarinpalPaymentSessionFactory
   /**
    * Creates an instance of `SandboxZarinpalPaymentSessionFactory`.
    *
-   * @param {ZarinpalServiceConfig} _config Zarinpal sandbox payment service
+   * @param {ZarinpalServiceConfig} config Zarinpal sandbox payment service
    *    configurations.
-   * @param {HttpServiceInvoker} _invoker HTTP/HTTPS service invoker.
+   * @param {HttpServiceInvoker} invoker HTTP/HTTPS service invoker.
    * @memberof SandboxZarinpalPaymentSessionFactory
    */
   constructor(
-    private _config: ZarinpalServiceConfig,
-    private _invoker: HttpServiceInvoker
+    private config: ZarinpalServiceConfig,
+    private invoker: HttpServiceInvoker
   ) {}
 
   /**
-   * Creates and returns a new Zarinpal sandbox payment session instance.
+   * Creates and returns a new Zarinpal sandbox payment session instance from
+   * given compatible object, if any.
    *
-   * @returns {ZarinpalPaymentSession}
+   * @param {unknown} [object] Compatible object to create new payment session
+   *   instance from, if any.
+   * @returns {SandboxZarinpalPaymentSession}
    * @memberof SandboxZarinpalPaymentSessionFactory
    */
-  create(): ZarinpalPaymentSession {
-    return new SandboxZarinpalPaymentSession(this._config, this._invoker);
+  create(object?: unknown): ZarinpalPaymentSession {
+    return new SandboxZarinpalPaymentSession(this.config, this.invoker, object);
   }
 }

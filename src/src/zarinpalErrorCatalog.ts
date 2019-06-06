@@ -8,15 +8,25 @@ import { default as config } from "./zarinpalErrorCatalogData";
  * @class ZarinpalErrorCatalog
  */
 export class ZarinpalErrorCatalog {
-  private _catalog: ZarinpalError[];
+  /**
+   * Provides the singleton instance of `ZarinpalErrorCatalog`.
+   *
+   * @static
+   * @type {ZarinpalErrorCatalog}
+   * @memberof ZarinpalErrorCatalog
+   */
+  static readonly instance: ZarinpalErrorCatalog = new ZarinpalErrorCatalog();
+
+  private catalog: ZarinpalError[];
 
   /**
    * Creates an instance of `ZarinpalErrorCatalog`.
    *
+   * @private
    * @memberof ZarinpalErrorCatalog
    */
-  constructor() {
-    this._catalog = config.errors;
+  private constructor() {
+    this.catalog = config.errors;
   }
 
   /**
@@ -28,7 +38,7 @@ export class ZarinpalErrorCatalog {
    * @memberof ZarinpalErrorCatalog
    */
   get(code: number): ZarinpalError {
-    return this._catalog.filter(x => x.code === code)[0];
+    return this.catalog.filter(x => x.code === code)[0];
   }
 
   /**

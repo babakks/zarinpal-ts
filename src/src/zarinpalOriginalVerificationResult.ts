@@ -9,7 +9,7 @@
 export class ZarinpalOriginalVerificationResult {
   /**
    * Creates an instance of `ZarinpalOriginalVerificationResult`.
-   * 
+   *
    * @param {number} status
    * @param {string} refId
    * @memberof ZarinpalOriginalVerificationResult
@@ -23,7 +23,7 @@ export class ZarinpalOriginalVerificationResult {
     );
   }
 
-  isSuccessful(): boolean {
+  get isSuccessful(): boolean {
     return this.status === 100;
   }
 }

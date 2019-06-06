@@ -10,8 +10,12 @@ import { HttpServiceInvoker } from "./http/httpServiceInvoker";
  * @extends {ZarinpalPaymentSession}
  */
 export class SandboxZarinpalPaymentSession extends ZarinpalPaymentSession {
-  constructor(config: ZarinpalServiceConfig, invoker: HttpServiceInvoker) {
-    super(config, invoker);
+  constructor(
+    config: ZarinpalServiceConfig,
+    invoker: HttpServiceInvoker,
+    object?: unknown
+  ) {
+    super(config, invoker, object);
   }
 
   protected registrationURL(): string {

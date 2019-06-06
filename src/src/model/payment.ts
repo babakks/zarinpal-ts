@@ -1,4 +1,4 @@
-import { PaymentStatus } from "./paymentStatus";
+import { PaymentStatus, isPaymentStatus } from "./paymentStatus";
 
 /**
  * Encapsulates payment information.
@@ -61,21 +61,57 @@ export class Payment {
    * @memberof Payment
    */
   constructor() {
-    this.init();
+    this.status = PaymentStatus.Created;
+    this.amount = 0;
+    this.name = "";
+    this.email = "";
+    this.mobile = "";
+    this.description = "";
   }
 
   /**
-   * Initializes properties with default values.
+   * Creates an instance of `Payment` from a compatible object.
    *
-   * @private
+   * @static
+   * @param {unknown} object Object to create new instance from.
+   * @returns {Payment} A `Payment` instance created from the given object. If
+   *   the given argument was not compatible, the method throws an exception.
    * @memberof Payment
    */
-  private init(): void {
-    this.status = PaymentStatus.Created;
-    this.description = "";
-    this.amount = 0;
-    this.email = "";
-    this.mobile = "";
-    this.name = "";
+  static from(object: unknown): Payment {
+    if (!isPayment(object)) {
+      throw new Error("Incompatible object.");
+    }
+
+    const result = new Payment();
+    result.status = object.status;
+    result.amount = object.amount;
+    result.name = object.name;
+    result.email = object.email;
+    result.mobile = object.mobile;
+    result.description = object.description;
+
+    return result;
   }
+}
+
+/**
+ * Determines whether given argument is a `Payment` object.
+ *
+ * @export
+ * @param {unknown} object Object to check its type.
+ * @returns {object is Payment}
+ */
+export function isPayment(object: unknown): object is Payment {
+  return (
+    object &&
+    typeof object === "object" &&
+    isPaymentStatus((object as Payment).status) &&
+    typeof (object as Payment).amount === "number" &&
+    typeof (object as Payment).name === "string" &&
+    typeof (object as Payment).mobile === "string" &&
+    typeof (object as Payment).email === "string" &&
+    typeof (object as Payment).amount === "string" &&
+    typeof (object as Payment).description === "string"
+  );
 }

@@ -10,11 +10,11 @@ export class HttpReader {
   /**
    * Creates an instance of `HttpReader`.
    *
-   * @param {IncomingMessage} _dataContainer Request/response object to read its
+   * @param {IncomingMessage} dataContainer Request/response object to read its
    *    content.
    * @memberof HttpReader
    */
-  constructor(private _dataContainer: IncomingMessage) {}
+  constructor(private dataContainer: IncomingMessage) {}
 
   /**
    * Asynchronously reads given HTTP request/response object and returns the
@@ -27,12 +27,12 @@ export class HttpReader {
     const body: any[] = [];
 
     return new Promise<Buffer>((resolve, reject) => {
-      this._dataContainer.on("error", err => reject(err));
-      this._dataContainer.on("data", chunk => {
+      this.dataContainer.on("error", err => reject(err));
+      this.dataContainer.on("data", chunk => {
         body.push(chunk);
       });
 
-      this._dataContainer.on("end", () => {
+      this.dataContainer.on("end", () => {
         resolve(Buffer.concat(body));
       });
     });

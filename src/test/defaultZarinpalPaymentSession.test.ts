@@ -173,35 +173,6 @@ describe("DefaultZarinpalPaymentSession", () => {
       expect(value.startsWith(gatewayUrl)).to.be.true;
     });
   });
-
-  describe("isMine()", () => {
-    it("should identify its callback request.", () => {
-      const setup = createVerificationSubject();
-
-      const result = setup.subject.isMine(setup.callbackRequest, undefined, {
-        Status: "OK",
-        Authority: "00000000000000000000987"
-      });
-
-      expect(result).to.be.true;
-    });
-
-    it("should not false identify another payment's callback request.", () => {
-      const setup = createVerificationSubject();
-
-      setup.callbackRequest.url = (setup.callbackRequest.url as string).replace(
-        setup.subject.authority,
-        "00000000000000000000111"
-      );
-
-      const result = setup.subject.isMine(setup.callbackRequest, undefined, {
-        Status: "OK",
-        Authority: "00000000000000000000111"
-      });
-
-      expect(result).to.be.false;
-    });
-  });
 });
 
 export class Setup {
@@ -220,8 +191,6 @@ export function createVerificationSubject(): Setup {
   };
 
   result.subject.payment.status = PaymentStatus.Registered;
-  result.subject.authority = "00000000000000000000987";
-
   return result;
 }
 

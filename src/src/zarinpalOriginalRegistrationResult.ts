@@ -23,7 +23,7 @@ export class ZarinpalOriginalRegistrationResult {
     );
   }
 
-  isSuccessful(): boolean {
+  get isSuccessful(): boolean {
     return this.status === 100;
   }
 }

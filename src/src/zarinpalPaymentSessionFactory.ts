@@ -8,10 +8,13 @@ import { ZarinpalPaymentSession } from "./zarinpalPaymentSession";
  */
 export interface ZarinpalPaymentSessionFactory {
   /**
-   * Creates and returns a Zarinpal payment session instance.
+   * Creates and returns Zarinpal payment session instance from given compatible
+   * object, if any.
    *
+   * @param {unknown} [object] Compatible object to create new payment session
+   *   instance from, if any.
    * @returns {ZarinpalPaymentSession}
    * @memberof ZarinpalPaymentSessionFactory
    */
-  create(): ZarinpalPaymentSession;
+  create(object?: unknown): ZarinpalPaymentSession;
 }

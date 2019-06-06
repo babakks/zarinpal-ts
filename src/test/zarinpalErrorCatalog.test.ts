@@ -6,17 +6,17 @@ import "mocha";
 describe("ZarinpalErrorCatalog", () => {
   describe("get()", () => {
     it("should return the correct entry.", () => {
-      expect(new ZarinpalErrorCatalog().get(-11).code).to.equal(-11);
+      expect(ZarinpalErrorCatalog.instance.get(-11).code).to.equal(-11);
     });
 
     it("should return `undefined` if given code was not found.", () => {
-      expect(new ZarinpalErrorCatalog().get(999888)).to.be.undefined;
+      expect(ZarinpalErrorCatalog.instance.get(999888)).to.be.undefined;
     });
   });
 
   describe("getSuccessful()", () => {
     it("should return the 'successful' entry correctly.", () => {
-      expect(new ZarinpalErrorCatalog().getSuccessful().code).to.equal(100);
+      expect(ZarinpalErrorCatalog.instance.getSuccessful().code).to.equal(100);
     });
   });
 });

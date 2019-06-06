@@ -1,5 +1,5 @@
 import { PaymentSession } from "./model/paymentSession";
-import { Payment } from "./model/payment";
+import { Payment, isPayment } from "./model/payment";
 import { IncomingMessage } from "http";
 import { PaymentOperationResult } from "./model/paymentOperationResult";
 import { ZarinpalServiceConfig } from "./zarinpalServiceConfig";
@@ -8,9 +8,9 @@ import { ZarinpalOriginalRegistrationResult } from "./zarinpalOriginalRegistrati
 import { ZarinpalErrorCatalog } from "./zarinpalErrorCatalog";
 import { ZarinpalOriginalVerificationResult } from "./zarinpalOriginalVerificationResult";
 import { PaymentStatus } from "./model/paymentStatus";
-
 import * as querystring from "querystring";
 import * as url from "url";
+import { ZarinpalError } from "./zarinpalError";
 
 /**
  * Implements Zarinpal payment session.
@@ -21,36 +21,60 @@ import * as url from "url";
  * @implements {PaymentSession}
  */
 export abstract class ZarinpalPaymentSession implements PaymentSession {
-  authority: string;
-
-  protected _payment: Payment;
-  protected _errors: ZarinpalErrorCatalog;
+  private _payment: Payment;
+  private _authority: string;
+  protected errors: ZarinpalErrorCatalog;
 
   /**
    * Creates an instance of `ZarinpalPaymentSession`.
    *
-   * @param {ZarinpalServiceConfig} _config Zarinpal payment service
+   * @param {ZarinpalServiceConfig} config Zarinpal payment service
    *    configuration.
-   * @param {HttpServiceInvoker} _invoker HTTP/HTTPs service invoker instance.
+   * @param {HttpServiceInvoker} invoker HTTP/HTTPs service invoker instance.
+   * @param {unknown} [object] Compatible argument to load new instance from. If
+   *   the argument was incompatible, an exception is thrown.
    * @memberof ZarinpalPaymentSession
    */
   constructor(
-    protected _config: ZarinpalServiceConfig,
-    protected _invoker: HttpServiceInvoker
+    protected config: ZarinpalServiceConfig,
+    protected invoker: HttpServiceInvoker,
+    object?: unknown
   ) {
-    this._payment = new Payment();
-    this.authority = "";
-    this._errors = new ZarinpalErrorCatalog();
+    this.errors = ZarinpalErrorCatalog.instance;
+
+    if (object) {
+      if (!isZarinpalPaymentSession(object)) {
+        throw new Error("Incompatible argument");
+      }
+
+      this._payment = Payment.from(object.payment);
+      this._authority = object.authority;
+    } else {
+      this._payment = new Payment();
+      this._authority = "";
+    }
   }
 
   /**
    * Gets the payment information object.
    *
    * @readonly
+   * @type {Payment}
    * @memberof ZarinpalPaymentSession
    */
-  get payment() {
+  get payment(): Payment {
     return this._payment;
+  }
+
+  /**
+   * Authority string of the payment.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof ZarinpalPaymentSession
+   */
+  get authority(): string {
+    return this._authority;
   }
 
   /**
@@ -58,43 +82,39 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
    *
    * @param {string} callbackURL Callback URL to which the user has to be
    *    navigated following the payment.
-   * @returns {Promise<PaymentOperationResult>}
+   * @returns {Promise<PaymentOperationResult | undefined>}
    * @memberof ZarinpalPaymentSession
    */
-  async register(callbackURL: string): Promise<PaymentOperationResult> {
+  async register(
+    callbackURL: string
+  ): Promise<PaymentOperationResult | undefined> {
     const canProceed =
-      this._payment.status === PaymentStatus.Created ||
-      this._payment.status === PaymentStatus.RegistrationFailed;
+      this.payment.status === PaymentStatus.Created ||
+      this.payment.status === PaymentStatus.RegistrationFailed;
 
     if (!canProceed) {
       return undefined;
     }
 
-    this._payment.status = PaymentStatus.Processing;
+    this.payment.status = PaymentStatus.Processing;
 
-    const operationResult = await this.callRegister(callbackURL);
-
-    const error = this._errors.get(operationResult.status);
-
-    if (operationResult.isSuccessful()) {
-      this.authority = operationResult.authority;
-      this._payment.status = PaymentStatus.Registered;
+    const op = await this.callRegister(callbackURL);
+    if (op.isSuccessful) {
+      this._authority = op.authority;
+      this.payment.status = PaymentStatus.Registered;
     } else {
-      this._payment.status = PaymentStatus.RegistrationFailed;
+      this.payment.status = PaymentStatus.RegistrationFailed;
     }
 
-    return operationResult.isSuccessful()
-      ? new PaymentOperationResult(
-          true,
-          this._errors.getSuccessful().code.toString(),
-          this._errors.getSuccessful().message
-        )
-      : new PaymentOperationResult(false, error.code.toString(), error.message);
+    const error = this.errors.get(op.status);
+    return op.isSuccessful
+      ? this.zarinpalErrorToOperationResult(this.errors.getSuccessful())
+      : this.zarinpalErrorToOperationResult(error);
   }
 
   protected async callRegister(callbackURL: string) {
     return ZarinpalOriginalRegistrationResult.from(
-      await this._invoker.invoke(
+      await this.invoker.invoke(
         this.appropriateRegistrationURL(),
         "POST",
         this.registrationRequestData(callbackURL)
@@ -117,75 +137,52 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
    *
    * @param {IncomingMessage} request
    * @param {*} [requestData]
-   * @returns {Promise<PaymentOperationResult>}
+   * @returns {Promise<PaymentOperationResult | undefined>}
    * @memberof ZarinpalPaymentSession
    */
   async verify(
     request: IncomingMessage,
     requestData?: any
-  ): Promise<PaymentOperationResult> {
-    const canProceed = this._payment.status === PaymentStatus.Registered;
+  ): Promise<PaymentOperationResult | undefined> {
+    const canProceed = this.payment.status === PaymentStatus.Registered;
 
     if (!canProceed) {
       return undefined;
     }
 
     if (this.isPaymentAborted(request)) {
-      const result = this._errors.get(-999);
-      return new PaymentOperationResult(
-        false,
-        result.code.toString(),
-        result.message
-      );
+      return this.zarinpalErrorToOperationResult(this.errors.get(-999));
     }
 
-    const operationResult = await this.callVerify();
+    const op = await this.callVerify();
+    const error = this.errors.get(op.status);
+    return op.isSuccessful
+      ? this.zarinpalErrorToOperationResult(this.errors.getSuccessful())
+      : this.zarinpalErrorToOperationResult(error);
+  }
 
-    const error = this._errors.get(operationResult.status);
-
-    return operationResult.isSuccessful()
-      ? new PaymentOperationResult(
-          true,
-          this._errors.getSuccessful().code.toString(),
-          this._errors.getSuccessful().message
-        )
-      : new PaymentOperationResult(false, error.code.toString(), error.message);
+  private zarinpalErrorToOperationResult(
+    error: ZarinpalError
+  ): PaymentOperationResult {
+    return new PaymentOperationResult(
+      error.code >= 100,
+      error.code.toString(),
+      error.message
+    );
   }
 
   private isPaymentAborted(request: IncomingMessage): boolean {
     const qs = querystring.parse(url.parse(request.url).query);
-    return !qs || qs.Status !== "OK";
+    return qs.Status !== "OK";
   }
 
   protected async callVerify() {
     return ZarinpalOriginalVerificationResult.from(
-      await this._invoker.invoke(
+      await this.invoker.invoke(
         this.appropriateVerificationURL(),
         "POST",
         this.verificationRequestData()
       )
-    );
-  }
-
-  /**
-   * Determines whether the given request is associated with the current session
-   * instance.
-   *
-   * @param {IncomingMessage} request
-   * @param {*} requestData
-   * @param {*} requestQueryString
-   * @returns {boolean}
-   * @memberof ZarinpalPaymentSession
-   */
-  isMine(
-    request: IncomingMessage,
-    requestData: any,
-    requestQueryString: any
-  ): boolean {
-    return (
-      requestQueryString &&
-      requestQueryString.Authority &&
-      requestQueryString.Authority === this.authority
     );
   }
 
@@ -200,22 +197,22 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
    */
   protected registrationRequestData(callbackURL: string): any {
     const result: any = {
-      MerchantID: this._config.merchantId,
-      Amount: this._payment.amount,
-      Description: this._payment.description,
-      Email: this._payment.email,
-      Mobile: this._payment.mobile,
+      MerchantID: this.config.merchantId,
+      Amount: this.payment.amount,
+      Description: this.payment.description,
+      Email: this.payment.email,
+      Mobile: this.payment.mobile,
       CallbackURL: callbackURL
     };
 
-    if (this._config.expireIn) {
+    if (this.config.expireIn) {
       result.AdditionalData = result.AdditionalData || {};
-      result.AdditionalData.expireIn = this._config.expireIn;
+      result.AdditionalData.expireIn = this.config.expireIn;
     }
 
-    if (this._config.wageCalculator) {
+    if (this.config.wageCalculator) {
       result.AdditionalData = result.AdditionalData || {};
-      result.AdditionalData.Wages = this._config.wageCalculator(this._payment);
+      result.AdditionalData.Wages = this.config.wageCalculator(this.payment);
     }
 
     return result;
@@ -231,9 +228,9 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
    */
   protected verificationRequestData(): any {
     return {
-      MerchantID: this._config.merchantId,
+      MerchantID: this.config.merchantId,
       Authority: this.authority,
-      Amount: this._payment.amount
+      Amount: this.payment.amount
     };
   }
 
@@ -246,11 +243,7 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
    * @memberof ZarinpalPaymentSession
    */
   protected requiresExtendedAPI(): boolean {
-    if (this._config.expireIn || this._config.wageCalculator) {
-      return true;
-    }
-
-    return false;
+    return this.config.expireIn !== undefined || !!this.config.wageCalculator;
   }
 
   /**
@@ -274,7 +267,6 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
    *
    * Note that the verification method URL is not the same for extended payments
    * (those with custom expiration or wages).
-   *
    *
    * @protected
    * @returns {string}
@@ -325,4 +317,22 @@ export abstract class ZarinpalPaymentSession implements PaymentSession {
    * @memberof ZarinpalPaymentSession
    */
   protected abstract extendedVerificationURL(): string;
+}
+
+/**
+ * Determines whether given argument is a `ZarinpalPaymentSession` object.
+ *
+ * @export
+ * @param {unknown} object Object to check its type.
+ * @returns {object is ZarinpalPaymentSession}
+ */
+export function isZarinpalPaymentSession(
+  object: unknown
+): object is ZarinpalPaymentSession {
+  return (
+    object &&
+    typeof object === "object" &&
+    typeof (object as ZarinpalPaymentSession).authority === "string" &&
+    isPayment((object as ZarinpalPaymentSession).payment)
+  );
 }

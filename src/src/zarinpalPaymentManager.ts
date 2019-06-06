@@ -1,11 +1,11 @@
 import { PaymentManager } from "./model/paymentManager";
 import { PaymentSession } from "./model/paymentSession";
 import { ZarinpalPaymentSession } from "./zarinpalPaymentSession";
-
 import { IncomingMessage } from "http";
-import { parse as parseQueryString } from "querystring";
-import { parse as parseURL } from "url";
+import * as qs from "querystring";
+import * as url from "url";
 import { ZarinpalPaymentSessionFactory } from "./zarinpalPaymentSessionFactory";
+import { AsyncMap } from "./misc/asyncMap";
 
 /**
  * Implements Zarinpal payment service manager.
@@ -15,25 +15,43 @@ import { ZarinpalPaymentSessionFactory } from "./zarinpalPaymentSessionFactory";
  * @implements {PaymentService}
  */
 export class ZarinpalPaymentManager implements PaymentManager {
-  private sessions: ZarinpalPaymentSession[];
-
   /**
    * Creates an instance of `ZarinpalPaymentManager`.
    *
    * @param {ZarinpalPaymentSessionFactory} factory A `ZarinpalPaymentSession`
    *   factory.
+   * @param {AsyncMap<string, any>} storage An asynchronous key/value pair
+   *   storage.
    * @memberof ZarinpalPaymentManager
    */
-  constructor(private factory: ZarinpalPaymentSessionFactory) {}
+  constructor(
+    private factory: ZarinpalPaymentSessionFactory,
+    private storage: AsyncMap<string, any>
+  ) {}
 
   /**
-   * Creates and returns a Zarinpal payment session object.
+   * Creates and returns a new Zarinpal payment session object instance.
    *
-   * @returns {PaymentSession}
-   * @memberof ZarinpalPaymentManager
+   * @returns {Promise<PaymentSession | undefined>} A `Promise` that resolves
+   *   with the newly created payment session object; otherwise, `undefined`.
+   * @memberof PaymentManager
    */
-  create(): PaymentSession {
+  async create(): Promise<PaymentSession | undefined> {
     return this.factory.create();
+  }
+
+  /**
+   * Stores given payment session for future references (typically, at
+   * verification step).
+   *
+   * @param {ZarinpalPaymentSession} session Payment session to store.
+   * @returns {Promise<void>} A `Promise` that resolves if the session stored
+   *   successfully; otherwise, the `Promise` will reject.
+   * @memberof PaymentManager
+   */
+  async store(session: ZarinpalPaymentSession): Promise<void> {
+    const id = this.extractIdFromSession(session);
+    await this.storage.set(id, session);
   }
 
   /**
@@ -41,15 +59,49 @@ export class ZarinpalPaymentManager implements PaymentManager {
    *
    * @param {IncomingMessage} callbackRequest Payment callback request message.
    * @param {*} [requestData] Request data.
-   * @returns {PaymentSession} The associated payment session; otherwise,
-   *    `undefined`.
+   * @returns {Promise<PaymentSession | undefined>} A `Promise` that resolves
+   *   with the associated payment session; otherwise, `undefined`.
+   * @memberof PaymentManager
+   */
+  async get(
+    callbackRequest: IncomingMessage,
+    requestData?: any
+  ): Promise<ZarinpalPaymentSession | undefined> {
+    const id = this.extractIdFromCallback(callbackRequest);
+    const object = await this.storage.get(id);
+    return this.factory.create(object);
+  }
+
+  /**
+   * Extracts a unique payment session identifier out of given session object.
+   *
+   * @protected
+   * @param {ZarinpalPaymentSession} session Payment session object to extract
+   *   the identifier from.
+   * @returns {string} The extracted payment session unique identifier.
    * @memberof ZarinpalPaymentManager
    */
-  get(callbackRequest: IncomingMessage, requestData?: any): PaymentSession {
-    const qs = parseQueryString(parseURL(callbackRequest.url).query);
+  protected extractIdFromSession(session: ZarinpalPaymentSession): string {
+    return session.authority;
+  }
 
-    return this.sessions.find(x => {
-      return x.isMine(callbackRequest, requestData, qs);
-    });
+  /**
+   * Extracts a unique payment session identifier out of given callback request
+   * message.
+   *
+   * @protected
+   * @param {IncomingMessage} request Callback request message.
+   * @returns {string} The extracted payment session unique identifier. If the
+   *   given request message was not valid, an exception is thrown.
+   * @memberof ZarinpalPaymentManager
+   */
+  protected extractIdFromCallback(request: IncomingMessage): string {
+    const qss = qs.parse(url.parse(request.url).query);
+
+    if (typeof qss.Authority !== "string") {
+      throw new Error("Invalid callback request.");
+    }
+
+    return qss.Authority;
   }
 }
